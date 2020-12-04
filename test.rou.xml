@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 12/04/20 10:55:20 by Eclipse SUMO netedit Version 1.7.0
+<!-- generated on 12/05/20 06:44:36 by Eclipse SUMO netedit Version 1.7.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -19,6 +19,7 @@
     </processing>
 
     <junctions>
+        <no-internal-links value="false"/>
         <no-turnarounds value="true"/>
         <junctions.corner-detail value="5"/>
         <junctions.limit-turn-speed value="5.5"/>
@@ -30,6 +31,7 @@
     </pedestrian>
 
     <netedit>
+        <additional-files value="C:\Users\Mr.Son\Desktop\sumo\test\test.add.xml"/>
         <route-files value="C:\Users\Mr.Son\Desktop\sumo\test\test.rou.xml"/>
     </netedit>
 
@@ -41,11 +43,16 @@
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="vArmy" vClass="army"/>
+    <vType id="vBus" vClass="bus"/>
+    <vType id="vTruck" vClass="truck"/>
+    <vType id="vType_1" vClass="emergency"/>
     <route edges="11 42" color="yellow" id="route_0"/>
     <route edges="11 22" color="yellow" id="route_1"/>
     <route edges="31 12" color="yellow" id="route_10"/>
     <route edges="31 22" color="yellow" id="route_11"/>
     <route edges="41 22" color="yellow" id="route_12"/>
+    <route edges="11 32" color="yellow" id="route_13"/>
     <route edges="11 32" color="yellow" id="route_2"/>
     <route edges="41 12" color="yellow" id="route_3"/>
     <route edges="41 32" color="yellow" id="route_4"/>
@@ -54,6 +61,48 @@
     <route edges="21 12" color="yellow" id="route_7"/>
     <route edges="21 42" color="yellow" id="route_8"/>
     <route edges="31 42" color="yellow" id="route_9"/>
+    <flow id="flow_100" begin="0.00" color="cyan" from="11" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_101" begin="0.00" color="cyan" from="31" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_102" begin="0.00" color="cyan" from="21" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_103" begin="0.00" color="cyan" from="31" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_62" type="vBus" begin="0.00" color="green" from="11" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_63" type="vBus" begin="0.00" from="31" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_64" type="vArmy" begin="0.00" color="red" from="31" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_65" type="vArmy" begin="0.00" color="red" from="41" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_66" type="vType_1" begin="0.00" from="21" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_67" type="vType_1" begin="0.00" from="11" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_68" type="vTruck" begin="0.00" from="41" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_69" type="vTruck" begin="0.00" color="white" from="41" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_70" type="vArmy" begin="0.00" from="31" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_71" type="vType_1" begin="0.00" color="white" from="11" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_72" type="vType_1" begin="0.00" color="white" from="11" to="32" end="1000.00" probability="0.01"/>
+    <flow id="flow_73" type="vType_1" begin="0.00" color="white" from="11" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_74" type="vType_1" begin="0.00" color="white" from="31" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_75" begin="0.00" from="11" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_76" begin="0.00" from="11" to="32" end="1000.00" probability="0.01"/>
+    <flow id="flow_77" begin="0.00" from="11" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_78" begin="0.00" from="21" to="32" end="1000.00" probability="0.01"/>
+    <flow id="flow_79" begin="0.00" from="21" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_80" begin="0.00" from="21" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_81" begin="0.00" from="41" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_82" begin="0.00" from="41" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_83" begin="0.00" from="41" to="32" end="1000.00" probability="0.01"/>
+    <flow id="flow_84" begin="0.00" from="41" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_85" begin="0.00" from="31" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_86" begin="0.00" from="31" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_87" begin="0.00" from="31" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_88" begin="0.00" color="white" from="11" to="32" end="1000.00" probability="0.01"/>
+    <flow id="flow_89" begin="0.00" color="white" from="11" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_90" begin="0.00" color="white" from="11" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_91" begin="0.00" color="white" from="41" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_92" begin="0.00" color="magenta" from="41" to="32" end="1000.00" probability="0.01"/>
+    <flow id="flow_93" begin="0.00" color="magenta" from="41" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_94" begin="0.00" color="magenta" from="21" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_95" begin="0.00" color="magenta" from="11" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_96" begin="0.00" color="magenta" from="31" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_97" begin="0.00" color="cyan" from="41" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_98" begin="0.00" color="cyan" from="41" to="32" end="1000.00" probability="0.01"/>
+    <flow id="flow_99" begin="0.00" color="cyan" from="21" to="12" end="1000.00" probability="0.01"/>
     <flow id="flow_0" type="DEFAULT_BIKETYPE" begin="0.00" route="route_12" end="1000.00" probability="0.02"/>
     <flow id="flow_1" begin="0.00" route="route_1" end="1000.00" probability="0.01"/>
     <flow id="flow_10" begin="0.00" route="route_4" end="1000.00" probability="0.01"/>
