@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 12/05/20 06:44:36 by Eclipse SUMO netedit Version 1.7.0
+<!-- generated on 12/05/20 07:06:15 by Eclipse SUMO netedit Version 1.7.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -31,7 +31,6 @@
     </pedestrian>
 
     <netedit>
-        <additional-files value="C:\Users\Mr.Son\Desktop\sumo\test\test.add.xml"/>
         <route-files value="C:\Users\Mr.Son\Desktop\sumo\test\test.rou.xml"/>
     </netedit>
 
@@ -43,10 +42,11 @@
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="DEFAULT_VEHTYPE" vClass="passenger" accel="0.4" decel="1" sigma="0.5"/>
     <vType id="vArmy" vClass="army"/>
-    <vType id="vBus" vClass="bus"/>
-    <vType id="vTruck" vClass="truck"/>
-    <vType id="vType_1" vClass="emergency"/>
+    <vType id="vBus" vClass="bus" accel="0.2" decel="0.4"/>
+    <vType id="vEmer" vClass="emergency" accel="2." decel="4"/>
+    <vType id="vTruck" vClass="truck" accel="0.2" decel="0.2"/>
     <route edges="11 42" color="yellow" id="route_0"/>
     <route edges="11 22" color="yellow" id="route_1"/>
     <route edges="31 12" color="yellow" id="route_10"/>
@@ -69,15 +69,15 @@
     <flow id="flow_63" type="vBus" begin="0.00" from="31" to="42" end="1000.00" probability="0.01"/>
     <flow id="flow_64" type="vArmy" begin="0.00" color="red" from="31" to="12" end="1000.00" probability="0.01"/>
     <flow id="flow_65" type="vArmy" begin="0.00" color="red" from="41" to="22" end="1000.00" probability="0.01"/>
-    <flow id="flow_66" type="vType_1" begin="0.00" from="21" to="12" end="1000.00" probability="0.01"/>
-    <flow id="flow_67" type="vType_1" begin="0.00" from="11" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_66" type="vEmer" begin="0.00" from="21" to="12" end="1000.00" probability="0.01"/>
+    <flow id="flow_67" type="vEmer" begin="0.00" from="11" to="22" end="1000.00" probability="0.01"/>
     <flow id="flow_68" type="vTruck" begin="0.00" from="41" to="22" end="1000.00" probability="0.01"/>
     <flow id="flow_69" type="vTruck" begin="0.00" color="white" from="41" to="12" end="1000.00" probability="0.01"/>
     <flow id="flow_70" type="vArmy" begin="0.00" from="31" to="42" end="1000.00" probability="0.01"/>
-    <flow id="flow_71" type="vType_1" begin="0.00" color="white" from="11" to="42" end="1000.00" probability="0.01"/>
-    <flow id="flow_72" type="vType_1" begin="0.00" color="white" from="11" to="32" end="1000.00" probability="0.01"/>
-    <flow id="flow_73" type="vType_1" begin="0.00" color="white" from="11" to="22" end="1000.00" probability="0.01"/>
-    <flow id="flow_74" type="vType_1" begin="0.00" color="white" from="31" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_71" type="vEmer" begin="0.00" color="white" from="11" to="42" end="1000.00" probability="0.01"/>
+    <flow id="flow_72" type="vEmer" begin="0.00" color="white" from="11" to="32" end="1000.00" probability="0.01"/>
+    <flow id="flow_73" type="vEmer" begin="0.00" color="white" from="11" to="22" end="1000.00" probability="0.01"/>
+    <flow id="flow_74" type="vEmer" begin="0.00" color="white" from="31" to="42" end="1000.00" probability="0.01"/>
     <flow id="flow_75" begin="0.00" from="11" to="42" end="1000.00" probability="0.01"/>
     <flow id="flow_76" begin="0.00" from="11" to="32" end="1000.00" probability="0.01"/>
     <flow id="flow_77" begin="0.00" from="11" to="22" end="1000.00" probability="0.01"/>
