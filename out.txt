@@ -1,0 +1,18 @@
+added SUMO_HOME to tools directory
+GGGGGgrrrrrrrrgGGGGgrrrrrrrGr
+33.0
+GGGGGgrrrrrrrrgGGGGgrrrrrrrrr
+5.0
+yyyyygrrrrrrrryyyyygrrrrrrrrr
+3.0
+rrrrrGrrrrrrrrrrrrrGrrrrrrrrr
+6.0
+rrrrryrrrrrrrrrrrrryrrrrrrrrr
+3.0
+rrrrrrGGGGGGGgrrrrrrgGGGGggrG
+32.0
+rrrrrrGGGGGGGgrrrrrrgGGGGggrr
+5.0
+rrrrrryyyyyyyyrrrrrryyyyyyyrr
+3.0
+0
