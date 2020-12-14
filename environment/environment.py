@@ -123,7 +123,7 @@ class tls_based(environment):
             wait_time = traci.vehicle.getAccumulatedWaitingTime(car)
         return wait_time   
         
-    def waiting_time(self):
+    def waiting_time(self): 
         return sum(self.waiting_time_each_vehicle().values())
         
     def get_tls(self):
