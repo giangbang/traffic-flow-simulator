@@ -22,7 +22,7 @@ class environment():
         else: 
             traci.start(gui)
         
-    def step(self):
+    def step(self, train=True):
         self._step += 1
         traci.simulationStep()
         
@@ -48,8 +48,7 @@ class environment():
         return traci.simulation.getMinExpectedNumber() <= 0
     
     def do_action(self, phaseid):
-        for i, junc in enumerate(traci.trafficlight.getIDList()):
-            traci.trafficlight.setPhase(junc, phaseid[i])
+        raise NotImplementedError
             
 # class edge_based(environment):
     # pass
@@ -63,6 +62,7 @@ class tls_based(environment):
         self._phase_dict = {}
         self._lanes_dict = {}
         self._edges_dict = {}
+        self._prev_waiting_time = {}
         for i, tls in enumerate(self._tls_list):
             phases = (traci.trafficlight.getCompleteRedYellowGreenDefinition(tls)[0].phases)
             lanes = set(traci.trafficlight.getControlledLanes(tls))
@@ -72,7 +72,9 @@ class tls_based(environment):
             self._lanes_dict[tls] = list(lanes)
             self._edges_dict[tls] = list(edges)
             self._phase_dict[tls] = list(p.state for p in phases)
+            self._prev_waiting_time[tls] = 0
         traci.close()
+        self._waiting_time = copy.deepcopy(self._prev_waiting_time)
         
     def get_state(self):
         state_dict = {}
@@ -92,9 +94,46 @@ class tls_based(environment):
         for it in tmp:
             tmp[it] = len(tmp[it])
         return tmp
+        
+    def step(self, train=True):
+        super().step()
+        # accumulate reward in each step
+        tmp = {}
+        for tls in self._tls_list:
+            waiting = 0
+            for e in self._edges_dict[tls]:
+                waiting += traci.edge.getWaitingTime(e)
+            tmp[tls] = waiting
+            
+        for tls in tmp:
+            self._waiting_time[tls] += min(0, self._prev_waiting_time[tls] - tmp[tls])
+        self._prev_waiting_time = tmp 
+        return self.get_step()
     
     def action_size(self):
         tmp = copy.deepcopy(self._phase_dict)
         for it in tmp:
             tmp[it] = int(len(tmp[it])/2)
         return tmp
+        
+    def waiting_time_each_vehicle(self):
+        tmp = {}
+        car_list = list(traci.vehicle.getIDList())
+        for car in car_list:
+            wait_time = traci.vehicle.getAccumulatedWaitingTime(car)
+        return wait_time   
+        
+    def waiting_time(self):
+        return sum(self.waiting_time_each_vehicle().values())
+        
+    def get_tls(self):
+        return self._tls_list
+        
+    def reward(self):
+        res = copy.deepcopy(self._waiting_time)
+        self.__reset_waiting_time__()
+        return res
+        
+    def __reset_waiting_time__(self):
+        for tls in self._tls_list:
+            self._waiting_time[tls] = 0

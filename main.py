@@ -42,6 +42,7 @@ def run(options, args):
         env.step()
         if env.get_step()% 100 == 0:
             print(env.get_state())
+            print(env.reward())
             
     
     env.end()
