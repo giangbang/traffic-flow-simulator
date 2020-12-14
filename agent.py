@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import random
+import matplotlib.pyplot as plt
 import numpy as np
 
 class agents():
@@ -12,19 +13,23 @@ class agents():
         print('device available: ', self.device)
         self.mem = replayMemory()
         self.nn.to(self.device)
-        self.batchThreshold = int(64)
-        self.discount = 0.95
-        self.optim = torch.optim.Adam(self.nn.parameters(), lr = 0.1)
+        self.batchThreshold = int(120)
+        self.discount = 0.
+        self.optim = torch.optim.Adam(self.nn.parameters(), lr = 1e-2)
         self.lossfunc = nn.MSELoss()
+        self.loss_his = []
         
-    def select_actions(self, epsilon, state):
+    def select_actions(self, epsilon, state, out=False):
         rand = random.random()
         res = None
-        if rand < epsilon:
+        if rand <= epsilon:
             with torch.no_grad():
                 self.nn.eval()
                 state = torch.from_numpy(state.astype(np.float32)).to(self.device)
-                res = self.nn(state).argmax(dim=1).squeeze().detach().cpu()
+                res = self.nn(state)
+                if (out):
+                    print(res)
+                res = res.argmax(dim=1).squeeze().detach().cpu()
                 res = np.array([res])
         else:
             res = np.random.randint(self.actionSize, size=1)
@@ -63,6 +68,7 @@ class agents():
         self.nn.train()
         loss = self.__loss__(state, action, nextState, reward)
         self.optim.zero_grad()
+        self.loss_his.append(loss.item())
         loss.backward()
         self.optim.step()
         
@@ -72,13 +78,18 @@ class agents():
     def load_policy(self, path):
         self.nn.load_state_dict(torch.load(path))
         
+    def plot(self):
+        x = range(len(self.loss_his))
+        
+        plt.plot(x, self.loss_his, c='r')
+        plt.show()
+        
     def __loss__(self, state, action, nextState, reward):
     
         value = self.nn(state)
        
         predictedReward = torch.gather(value, 1, action)
         nextPredictedReward = self.nn(nextState)
-        
         estimatedReward = reward + self.discount * torch.max(nextPredictedReward, dim=1)[0]
         return self.lossfunc(predictedReward, estimatedReward)
     
@@ -86,8 +97,13 @@ class neuralNet(nn.Module):
     def __init__(self, inchannels, outchannels):
         super(neuralNet, self).__init__()
         self.layers = nn.Sequential(
-            nn.Linear(inchannels, outchannels),
-            
+            nn.Linear(inchannels, outchannels*2, bias=True),
+            nn.BatchNorm1d(outchannels*2),
+            nn.ReLU(),
+            nn.Linear(outchannels*2, outchannels, bias=True),
+            nn.BatchNorm1d(outchannels),
+            nn.ReLU(),
+            nn.Linear(outchannels, outchannels, bias=True),
         )
         
     def forward(self, x):

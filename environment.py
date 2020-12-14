@@ -6,6 +6,8 @@ class environment():
     
         self.junctions = {}
         self.programLightDict = {}
+        self.prev_waiting_time = 0
+        self.waiting_time = 0
         trafficlights = list(traci.trafficlight.getIDList())
         for trafficlight in trafficlights:
             lanes = set(traci.trafficlight.getControlledLanes(trafficlight))
@@ -22,13 +24,22 @@ class environment():
                 res += (traci.lane.getWaitingTime(lane))
         return res
         
-    def reward(self):
-        return 2.5-np.array([self.getWaitingTime()]).reshape(1, 1) / 2e3
+    def cumulateWaitingTime(self):
+        now = self.getWaitingTime()
+        # print(no)
+        self.waiting_time += max(0, now - self.prev_waiting_time)
+        self.prev_waiting_time = now
         
+    def reward(self):
+        res = -np.array([self.waiting_time]).reshape(1, 1)
+        self.waiting_time = 0
+        return res/1000
+   
+     
     def getPhase(self):
         return (traci.trafficlight.getPhase('0'))
-           
-    def getState(self):
+        
+    def getState2(self):
         state = np.zeros(0)
         for junc in self.junctions:
             numLanes = len(self.junctions[junc])
@@ -39,6 +50,17 @@ class environment():
                 state[i*2+1] = traci.lane.getLastStepMeanSpeed(id)
         phase = self.getPhase()
         state[numLanes*2 + phase] = 1
+        return state[np.newaxis, ...]
+           
+    def getState(self):
+        state = np.zeros(0)
+        for junc in self.junctions:
+            numLanes = len(self.junctions[junc])
+            numPhases = len(self.programLightDict[junc])
+            state = np.zeros((numLanes), dtype=np.float32)
+            for i, id in enumerate(self.junctions[junc]):
+                state[i] = traci.lane.getLastStepOccupancy(id)
+       
         return state[np.newaxis, ...]
         
     def state_size(self):
@@ -51,4 +73,3 @@ class environment():
         for i, junc in enumerate(self.junctions):
             traci.trafficlight.setPhase(junc, phaseid[i])
             
-        return self.getState(), self.reward()
