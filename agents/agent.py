@@ -97,11 +97,7 @@ class neuralNet(nn.Module):
     def __init__(self, inchannels, outchannels):
         super(neuralNet, self).__init__()
         self.layers = nn.Sequential(
-            nn.Linear(inchannels, outchannels*2, bias=True),
-            nn.BatchNorm1d(outchannels*2),
-            nn.ReLU(),
-            nn.Linear(outchannels*2, outchannels, bias=True),
-            nn.BatchNorm1d(outchannels),
+            nn.Linear(inchannels, outchannels, bias=True),
             nn.ReLU(),
             nn.Linear(outchannels, outchannels, bias=True),
         )
