@@ -4,9 +4,9 @@ import os
 import sys
 import optparse
 import time
-from environment.environment import tls_based
-# from agents.agent import agents
-# from agent import agent
+from environment.environment import *
+from agents.agent import *
+
 
 # we need to import some python modules from the $SUMO_HOME/tools directory
 # os.environ['SUMO_HOME'] = "/usr/share/sumo/"
@@ -21,60 +21,67 @@ else:
 def get_options():
     opt_parser = optparse.OptionParser()
     opt_parser.add_option("--nogui", action="store_true",
-                         default=True, help="run the commandline version of sumo")
-    opt_parser.add_option("--af", action="store_true",
+                         default=False, help="run the commandline version of sumo")
+    opt_parser.add_option("--train", action="store_true",
                          default=False, help="run the commandline version of sumo")
     opt_parser.add_option("--episode", type=int, dest='episode',
                          default=10, help="parameters for the commandline training of agent")
+    opt_parser.add_option("--yphs", type=int, dest='yellow_phase',
+                         default=5, help="parameters for the commandline controlling of agent")
+    opt_parser.add_option("--gphs", type=int, dest='green_phase',
+                         default=10, help="parameters for the commandline controlling of agent")
+    opt_parser.add_option("--stop", action="store_true",
+                         default=False, help="searly stop, just for debuging")
     options, args = opt_parser.parse_args()
     return options, args
 
 
 # contains TraCI control loop
-def run(options, args):
-    
-                             
-    env = tls_based(options, args)
-    env.start(False)
+def run(options):
+    print(options)
+    env = tls_based_env(options)
+    agt = agent_maneger(env.state_size(), env.action_size())
+    agt.load()
     print(env.state_size())
     print(env.action_size())
-    while not(env.done()):
-        env.step()
-        if env.get_step()% 100 == 0:
-            print(env.get_state())
-            print(env.reward())
+    for eps in range(options.episode):
+        epsilon = ( (eps+1) /options.episode )
+        # simulation start
+        env.start()
+        
+        state = env.get_state()
+        action = agt.select_action(epsilon, state)
+        # some action might not be applied, so here we just update 
+        # the agent's memory when its action is considered
+        update_res = env.do_action(action) 
+        
+        # simulation loop
+        while not(env.done()):
+            env.step()
             
-    
-    env.end()
-
-    # while episode > 0:
-        # episode -= 1
-        # traci.start([sumoBinary, "-c", "test.sumocfg",
-                             # "--tripinfo-output", "tripinfo.xml"])
-        # while traci.simulation.getMinExpectedNumber() > 0:
-            # traci.simulationStep()
-            # print(env.state_size())
-            # print(env.action_size())
-            # print(env.reward())
-            # break
-  
-    # traci.close()
+            if env.get_step() % 5 == 0:
+                reward = env.reward()
+                # print('reward')
+                # print(reward)
+                next_state = env.get_state()
+                agt.add_memory(state, action, next_state, reward, update_res)
+                action = agt.select_action(epsilon, next_state)
+                state = next_state
+                update_res = env.do_action(action)
+                if options.train:
+                    agt.train()
+            if env.get_step() >= 100 and options.stop:
+                break
+        env.end()
+    agt.save()
+    print('total reward:', str(env.cumulative_total_reward()))
+    print('minimum reward:', str(env.min_reward()))
+    print('maximum reward:', str(env.max_reward()))
     sys.stdout.flush()
 
 
 # main entry point
 if __name__ == "__main__":
-    options, args = get_options()
-    run(options, args)
+    options, _ = get_options()
+    run(options)
     
-    
-    # check binary
-    # if options.nogui:
-        # sumoBinary = checkBinary('sumo')
-    # else:
-        # sumoBinary = checkBinary('sumo-gui')
-
-    # traci starts sumo as a subprocess and then this script connects and runs
-    # [sumoBinary, "-c", "test.sumocfg",
-                             # "--tripinfo-output", "tripinfo.xml"])
-                             
