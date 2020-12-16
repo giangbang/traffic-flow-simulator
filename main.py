@@ -27,9 +27,9 @@ def get_options():
     opt_parser.add_option("--episode", type=int, dest='episode',
                          default=10, help="parameters for the commandline training of agent")
     opt_parser.add_option("--yphs", type=int, dest='yellow_phase',
-                         default=5, help="parameters for the commandline controlling of agent")
-    opt_parser.add_option("--gphs", type=int, dest='green_phase',
                          default=10, help="parameters for the commandline controlling of agent")
+    opt_parser.add_option("--gphs", type=int, dest='green_phase',
+                         default=20, help="parameters for the commandline controlling of agent")
     opt_parser.add_option("--stop", action="store_true",
                          default=False, help="searly stop, just for debuging")
     options, args = opt_parser.parse_args()
@@ -47,7 +47,10 @@ def run(options):
     for eps in range(options.episode):
         print('='*40)
         print('Episode', str(eps))
-        epsilon = ( (eps) / options.episode )
+        epsilon = ( (eps) / (options.episode+1) )
+        if not options.train:
+          epsilon = 1
+        # epsilon=0
         print('epsilon = '+str(epsilon))
         # simulation start
         env.start()
@@ -62,13 +65,13 @@ def run(options):
         while not(env.done()) and env.get_step() < 5000:
           env.step()
           
-          # if options.train:
-            # agt.train()
-          if env.get_step() % 5 == 0:
-            reward = env.reward()
+          if options.train:
+            agt.train()
+          if env.get_step() % 20 == 0:
+            reward = env.reward(update_res)
             next_state = env.get_state()
             agt.add_memory(state, action, next_state, reward, update_res)
-            action = agt.select_action(epsilon, next_state)
+            action = agt.select_action(0, next_state)
             state = next_state
             update_res = env.do_action(action)
               
@@ -77,7 +80,7 @@ def run(options):
         env.end()
         
         if options.train:
-          for e in range(1000):
+          for e in range(500):
             agt.train()
             
         if (env.get_step() >= 5000):

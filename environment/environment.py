@@ -104,6 +104,15 @@ class tls_based_env(environment):
         
         return state_dict
         
+    def start(self):
+      super().start()
+      self._traffic_timer = {} 
+      self._prev_waiting_time = {}
+      for tls in self._tls_list:
+        self._traffic_timer[tls] = clocks()
+        self._prev_waiting_time[tls] = 0
+      self._waiting_time = copy.deepcopy(self._prev_waiting_time) 
+        
     def state_size(self):
         if self._state_size is None:
             tmp = self.get_state()
@@ -151,11 +160,12 @@ class tls_based_env(environment):
     def get_tls(self):
         return self._tls_list
         
-    def reward(self):
+    def reward(self, update_res):
         res = copy.deepcopy(self._waiting_time)
-        self.__reset_waiting_time__()
+        self.__reset_waiting_time__(update_res)
+        # convert to np array 
         for tls in res:
-            res[tls] = np.array(res[tls]).reshape(1, 1).astype(np.float32)/200
+            res[tls] = np.array(-np.log(-res[tls]+1)).reshape(1, 1).astype(np.float32)/5
         total_reward_this_step = sum(res.values())
         self._total_reward += total_reward_this_step
         self._min_reward = min(self._min_reward, total_reward_this_step)
@@ -183,7 +193,7 @@ class tls_based_env(environment):
                 action = action_list[tls]*2
                 if (action != self._traffic_timer[tls].phaseId):
                     prev = self._traffic_timer[tls].phaseId
-                    self._traffic_timer[tls].set((prev+1)%(self.action_size()[tls]), now)
+                    self._traffic_timer[tls].set((prev+1), now)
                     self._traffic_timer[tls].query(action)
                 else: 
                     self._traffic_timer[tls].switch(now)
@@ -196,8 +206,9 @@ class tls_based_env(environment):
                 
         return res
         
-    def __reset_waiting_time__(self):
+    def __reset_waiting_time__(self, update_res):
         for tls in self._tls_list:
+          if update_res[tls]:
             self._waiting_time[tls] = 0
          
 class clocks():
