@@ -43,6 +43,7 @@
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
     <vType id="DEFAULT_VEHTYPE" vClass="passenger" accel="0.4" decel="1" sigma="0.5"/>
+    <vType id="DEFAULT_BIKETYPE" vClass="passenger" accel="0.4" decel="1" sigma="0.5"/>
     <vType id="vArmy" vClass="army"/>
     <vType id="vBus" vClass="bus" accel="0.2" decel="0.4"/>
     <vType id="vEmer" vClass="emergency" accel="2." decel="4"/>
