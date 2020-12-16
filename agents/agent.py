@@ -115,7 +115,10 @@ class tls_based_agent(agents):
     def plot(self):
         x = range(len(self.loss_his))
         
-        plt.plot(x, self.loss_his, c='r')
+        plt.figure(figsize=(10, 6))
+        plt.plot(x, self.loss_his, label='loss', color='blue')
+        plt.xlabel('step', fontsize=13)
+        plt.ylabel('loss',fontsize=13)
         plt.show()
         
     def __loss__(self, state, action, nextState, reward, log):
@@ -207,6 +210,10 @@ class agent_maneger():
                 print('Done saving', a)
             except:
                 print('Error, cannot save '+a+' to '+path)
+                
+    def plot(self):
+        for a in self._agent_list:
+            a.plot()
                 
     def load(self):
         for a in self._agent_list:

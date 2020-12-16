@@ -45,6 +45,8 @@ def run(options):
     print(env.state_size())
     print(env.action_size())
     for eps in range(options.episode):
+        print('='*40)
+        print('Episode', str(eps))
         epsilon = ( (eps+1) /options.episode )
         # simulation start
         env.start()
@@ -74,9 +76,11 @@ def run(options):
                 break
         env.end()
     agt.save()
+    agt.plot()
     print('total reward:', str(env.cumulative_total_reward()))
     print('minimum reward:', str(env.min_reward()))
     print('maximum reward:', str(env.max_reward()))
+    print('step: ', str(env.get_step())
     sys.stdout.flush()
 
 

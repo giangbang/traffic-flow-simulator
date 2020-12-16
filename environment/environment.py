@@ -16,6 +16,7 @@ class environment():
         self._step = 0
         
     def start(self):
+        self._step = 0
         if (self.options.nogui):
             traci.start(nogui)
         else: 
