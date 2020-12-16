@@ -11,8 +11,8 @@ class agents():
         self.sate_size = inchannels
         self.device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
         print('device available: ', self.device)
-        self.batchThreshold = int(20)
-        self.discount = .1
+        self.batchThreshold = int(17)
+        self.discount = 0
         self.loss_his = []
         
     def select_action(self, epsilon, state):

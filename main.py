@@ -60,21 +60,26 @@ def run(options):
         
         # simulation loop
         while not(env.done()) and env.get_step() < 5000:
-            env.step()
-            
-            if options.train:
-              agt.train()
-            if env.get_step() % 5 == 0:
-              reward = env.reward()
-              next_state = env.get_state()
-              agt.add_memory(state, action, next_state, reward, update_res)
-              action = agt.select_action(epsilon, next_state)
-              state = next_state
-              update_res = env.do_action(action)
-                
-            if env.get_step() >= 100 and options.stop:
-                break
+          env.step()
+          
+          # if options.train:
+            # agt.train()
+          if env.get_step() % 5 == 0:
+            reward = env.reward()
+            next_state = env.get_state()
+            agt.add_memory(state, action, next_state, reward, update_res)
+            action = agt.select_action(epsilon, next_state)
+            state = next_state
+            update_res = env.do_action(action)
+              
+          if env.get_step() >= 100 and options.stop:
+              break
         env.end()
+        
+        if options.train:
+          for e in range(1000):
+            agt.train()
+            
         if (env.get_step() >= 5000):
           print("cannot finish the episode")
         print('total reward:', str(env.cumulative_total_reward()))
