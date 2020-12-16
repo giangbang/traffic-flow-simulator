@@ -14,9 +14,15 @@ class environment():
     def __init__(self, options):
         self.options = options
         self._step = 0
+        self._total_reward = 0
+        self._max_reward = -1e9
+        self._min_reward = 1e9
         
     def start(self):
         self._step = 0
+        self._total_reward = 0
+        self._max_reward = -1e9
+        self._min_reward = 1e9
         if (self.options.nogui):
             traci.start(nogui)
         else: 
@@ -66,9 +72,6 @@ class tls_based_env(environment):
         self._prev_waiting_time = {}
         self._action_size = None
         self._state_size = None
-        self._total_reward = 0
-        self._max_reward = -1e9
-        self._min_reward = 1e9
         
         for i, tls in enumerate(self._tls_list):
             phases = (traci.trafficlight.getCompleteRedYellowGreenDefinition(tls)[0].phases)
@@ -111,8 +114,7 @@ class tls_based_env(environment):
         
     def step(self):
         super().step()
-        if not self.options.train:
-            return
+      
         # accumulate reward in each step
         tmp = {}
         for tls in self._tls_list:
@@ -153,7 +155,7 @@ class tls_based_env(environment):
         res = copy.deepcopy(self._waiting_time)
         self.__reset_waiting_time__()
         for tls in res:
-            res[tls] = np.array(res[tls]).reshape(1, 1).astype(np.float32)
+            res[tls] = np.array(res[tls]).reshape(1, 1).astype(np.float32)/1000
         total_reward_this_step = sum(res.values())
         self._total_reward += total_reward_this_step
         self._min_reward = min(self._min_reward, total_reward_this_step)
@@ -181,7 +183,7 @@ class tls_based_env(environment):
                 action = action_list[tls]*2
                 if (action != self._traffic_timer[tls].phaseId):
                     prev = self._traffic_timer[tls].phaseId
-                    self._traffic_timer[tls].set((prev+1)%len(self.action_size()[tls]), now)
+                    self._traffic_timer[tls].set((prev+1)%(self.action_size()[tls]), now)
                     self._traffic_timer[tls].query(action)
                 else: 
                     self._traffic_timer[tls].switch(now)

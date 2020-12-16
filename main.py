@@ -58,7 +58,7 @@ def run(options):
         update_res = env.do_action(action) 
         
         # simulation loop
-        while not(env.done()):
+        while not(env.done()) and env.get_step() < 5000:
             env.step()
             
             if env.get_step() % 5 == 0:
@@ -75,14 +75,14 @@ def run(options):
             if env.get_step() >= 100 and options.stop:
                 break
         env.end()
+        if (env.get_step() >= 5000):
+          print("cannot finish the episode")
+        print('total reward:', str(env.cumulative_total_reward()))
+        print('minimum reward:', str(env.min_reward()))
+        print('maximum reward:', str(env.max_reward()))
+        print('step: ', str(env.get_step()))
     agt.save()
-    
-    print('total reward:', str(env.cumulative_total_reward()))
-    print('minimum reward:', str(env.min_reward()))
-    print('maximum reward:', str(env.max_reward()))
-    print('step: ', str(env.get_step()))
     sys.stdout.flush()
-    
     agt.plot()
 
 

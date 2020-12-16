@@ -149,9 +149,13 @@ class neuralNet(nn.Module):
     def __init__(self, inchannels, outchannels):
         super(neuralNet, self).__init__()
         self.layers = nn.Sequential(
-            nn.Linear(inchannels, outchannels, bias=True),
+            nn.Linear(inchannels, 500, bias=True),
             nn.ReLU(),
-            nn.Linear(outchannels, outchannels, bias=True),
+            nn.Linear(500, 500, bias=True),
+            nn.ReLU(),
+            nn.Linear(500, 500, bias=True),
+            nn.ReLU(),
+            nn.Linear(500, outchannels, bias=True),
         )
         
     def forward(self, x):
