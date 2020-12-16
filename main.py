@@ -76,12 +76,14 @@ def run(options):
                 break
         env.end()
     agt.save()
-    agt.plot()
+    
     print('total reward:', str(env.cumulative_total_reward()))
     print('minimum reward:', str(env.min_reward()))
     print('maximum reward:', str(env.max_reward()))
-    print('step: ', str(env.get_step())
+    print('step: ', str(env.get_step()))
     sys.stdout.flush()
+    
+    agt.plot()
 
 
 # main entry point

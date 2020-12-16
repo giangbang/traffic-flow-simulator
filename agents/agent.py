@@ -112,14 +112,14 @@ class tls_based_agent(agents):
     def load(self, path):
         self.nn.load_state_dict(torch.load(path))
         
-    def plot(self):
-        x = range(len(self.loss_his))
+    def plot(self, name):
+        x = np.arange(len(self.loss_his))
         
-        plt.figure(figsize=(10, 6))
-        plt.plot(x, self.loss_his, label='loss', color='blue')
+        fig = plt.figure(figsize=(10, 6))
+        plt.plot(x, self.loss_his, label='loss', color='blue', lw=2)
         plt.xlabel('step', fontsize=13)
         plt.ylabel('loss',fontsize=13)
-        plt.show()
+        fig.savefig('./resource/output/1/'+name)
         
     def __loss__(self, state, action, nextState, reward, log):
     
@@ -213,7 +213,8 @@ class agent_maneger():
                 
     def plot(self):
         for a in self._agent_list:
-            a.plot()
+            self._agent_list[a].plot(a)
+        plt.close("all")
                 
     def load(self):
         for a in self._agent_list:
