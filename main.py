@@ -47,7 +47,8 @@ def run(options):
     for eps in range(options.episode):
         print('='*40)
         print('Episode', str(eps))
-        epsilon = ( (eps+1) /options.episode )
+        epsilon = ( (eps) / options.episode )
+        print('epsilon = '+str(epsilon))
         # simulation start
         env.start()
         
@@ -61,17 +62,16 @@ def run(options):
         while not(env.done()) and env.get_step() < 5000:
             env.step()
             
+            if options.train:
+              agt.train()
             if env.get_step() % 5 == 0:
-                reward = env.reward()
-                # print('reward')
-                # print(reward)
-                next_state = env.get_state()
-                agt.add_memory(state, action, next_state, reward, update_res)
-                action = agt.select_action(epsilon, next_state)
-                state = next_state
-                update_res = env.do_action(action)
-                if options.train:
-                    agt.train()
+              reward = env.reward()
+              next_state = env.get_state()
+              agt.add_memory(state, action, next_state, reward, update_res)
+              action = agt.select_action(epsilon, next_state)
+              state = next_state
+              update_res = env.do_action(action)
+                
             if env.get_step() >= 100 and options.stop:
                 break
         env.end()
@@ -83,7 +83,8 @@ def run(options):
         print('step: ', str(env.get_step()))
     agt.save()
     sys.stdout.flush()
-    agt.plot()
+    if (options.train):
+      agt.plot()
 
 
 # main entry point

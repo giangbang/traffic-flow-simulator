@@ -6,13 +6,13 @@ import numpy as np
 
 class agents():
     def __init__(self, inchannels, outchannels):
-        self.memory = replayMemory(batch_size=4)
+        self.memory = replayMemory(batch_size=16)
         self.action_size = outchannels
         self.sate_size = inchannels
         self.device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
         print('device available: ', self.device)
-        self.batchThreshold = int(5)
-        self.discount = 1
+        self.batchThreshold = int(20)
+        self.discount = .1
         self.loss_his = []
         
     def select_action(self, epsilon, state):
@@ -162,7 +162,7 @@ class neuralNet(nn.Module):
         return self.layers(x)
         
 class replayMemory:
-    def __init__(self, max_size=int(1e3), batch_size=32):
+    def __init__(self, max_size=int(1e3), batch_size=16):
         self.maxSize = int(max_size)
         self.mem = []
         self.pos = int(0)

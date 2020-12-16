@@ -155,7 +155,7 @@ class tls_based_env(environment):
         res = copy.deepcopy(self._waiting_time)
         self.__reset_waiting_time__()
         for tls in res:
-            res[tls] = np.array(res[tls]).reshape(1, 1).astype(np.float32)/1000
+            res[tls] = np.array(res[tls]).reshape(1, 1).astype(np.float32)/200
         total_reward_this_step = sum(res.values())
         self._total_reward += total_reward_this_step
         self._min_reward = min(self._min_reward, total_reward_this_step)
@@ -178,7 +178,7 @@ class tls_based_env(environment):
             res[tls] = False
             # apply yellow phase if neccessary
             if self._traffic_timer[tls].is_green():
-                if (now - self._traffic_timer[tls].start <= self.options.green_phase):
+                if (now - self._traffic_timer[tls].start < self.options.green_phase):
                     continue
                 action = action_list[tls]*2
                 if (action != self._traffic_timer[tls].phaseId):
@@ -189,7 +189,7 @@ class tls_based_env(environment):
                     self._traffic_timer[tls].switch(now)
                 res[tls] = True
             else: 
-                if (now - self._traffic_timer[tls].start <= self.options.yellow_phase):
+                if (now - self._traffic_timer[tls].start < self.options.yellow_phase):
                     continue
                 self._traffic_timer[tls].switch(now)
                 res[tls] = True
